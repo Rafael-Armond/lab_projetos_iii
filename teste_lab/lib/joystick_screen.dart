@@ -1,10 +1,10 @@
 import 'package:bluetooth_classic/models/device.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_joystick/flutter_joystick.dart';
 import 'package:get/get.dart';
 import 'package:teste_lab/ble_controller.dart';
 import 'package:teste_lab/card_device.dart';
+import 'package:teste_lab/object_detected.dart';
 
 class JoystickScreen extends StatelessWidget {
   final JoystickController _joystickController = JoystickController();
@@ -24,8 +24,25 @@ class JoystickScreen extends StatelessWidget {
         builder: (controller) {
           return Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ObjectDetected(
+                      title: "Esquerda",
+                      detected: true,
+                    ),
+                    ObjectDetected(
+                      title: "Frente",
+                      detected: true,
+                    ),
+                    ObjectDetected(
+                      detected: true,
+                      title: "Direita",
+                    ),
+                  ],
+                ),
                 Center(
                   child: Stack(
                     alignment: Alignment.center,
@@ -51,9 +68,6 @@ class JoystickScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
                 Obx(
                   () => ElevatedButton(
                     onPressed: _bleController.isScanning.value
@@ -61,9 +75,6 @@ class JoystickScreen extends StatelessWidget {
                         : () async => await controller.scanDevices(),
                     child: const Text("Escanear"),
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
                 ),
                 SingleChildScrollView(
                   child: StreamBuilder<List<Device>>(
@@ -77,8 +88,7 @@ class JoystickScreen extends StatelessWidget {
                               final data = snapshot.data![index];
                               return CardDevice(
                                   onTap: () async {
-                                    await _bleController
-                                        .connectDevice(data);
+                                    await _bleController.connectDevice(data);
                                   },
                                   data: data);
                             });
@@ -89,9 +99,6 @@ class JoystickScreen extends StatelessWidget {
                       }
                     },
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
                 ),
               ],
             ),

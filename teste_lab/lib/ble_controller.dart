@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:bluetooth_classic/models/device.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,8 @@ class BleController extends GetxController {
   }
 
   Future<void> connectDevice(Device device) async {
-    await _bluetoothClassicPlugin.connect(device.address, "00001101-0000-1000-8000-00805f9b34fb");
+    await _bluetoothClassicPlugin.connect(
+        device.address, "00001101-0000-1000-8000-00805f9b34fb");
 
     Get.snackbar(
       "Conectado com sucesso",
@@ -41,9 +41,7 @@ class BleController extends GetxController {
     });
   }
 
-  Future<void> disconnectDevice(Device device) async {
-
-  }
+  Future<void> disconnectDevice(Device device) async {}
 
   Future<void> discoverServices() async {
     if (connectedDevice.value != null) {
@@ -64,8 +62,10 @@ class BleController extends GetxController {
     posX.value = positionX + step * details.x;
     posY.value = positionY + step * details.y;
 
-    _bluetoothClassicPlugin.write("${posX.value.toString()} ${posY.value.toString()}");
+    _bluetoothClassicPlugin
+        .write("${posX.value.toString()} ${posY.value.toString()}");
   }
 
-  Stream<List<Device>> get scanResults => Stream.fromFuture(_bluetoothClassicPlugin.getPairedDevices());
+  Stream<List<Device>> get scanResults =>
+      Stream.fromFuture(_bluetoothClassicPlugin.getPairedDevices());
 }

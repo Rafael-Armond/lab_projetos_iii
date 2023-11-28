@@ -1,6 +1,5 @@
 import 'package:bluetooth_classic/models/device.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 
 class CardDevice extends StatelessWidget {
   final Device data;
@@ -17,7 +16,7 @@ class CardDevice extends StatelessWidget {
         elevation: 2,
         child: ListTile(
           title: Text(data.name ?? ""),
-          subtitle: Text(data.address)
+          subtitle: Text(data.address),
         ),
       ),
     );
