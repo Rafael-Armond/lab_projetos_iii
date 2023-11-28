@@ -13,6 +13,7 @@ dependencies:
   flutter_blue: ^0.8.0
   get: ^4.6.6
   permission_handler: ^11.0.1
+  bluetooth_classic: ^0.0.1
 
 dev_dependencies:
   flutter_test:

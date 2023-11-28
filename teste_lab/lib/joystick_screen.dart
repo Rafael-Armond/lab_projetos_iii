@@ -1,3 +1,4 @@
+import 'package:bluetooth_classic/models/device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_joystick/flutter_joystick.dart';
@@ -65,7 +66,7 @@ class JoystickScreen extends StatelessWidget {
                   height: 15,
                 ),
                 SingleChildScrollView(
-                  child: StreamBuilder<List<ScanResult>>(
+                  child: StreamBuilder<List<Device>>(
                     stream: controller.scanResults,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
@@ -77,7 +78,7 @@ class JoystickScreen extends StatelessWidget {
                               return CardDevice(
                                   onTap: () async {
                                     await _bleController
-                                        .connectDevice(data.device);
+                                        .connectDevice(data);
                                   },
                                   data: data);
                             });

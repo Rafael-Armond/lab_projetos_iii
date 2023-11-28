@@ -1,11 +1,16 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:bluetooth_classic/models/device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_joystick/flutter_joystick.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:bluetooth_classic/bluetooth_classic.dart';
 
 class BleController extends GetxController {
   FlutterBlue flutterBlue = FlutterBlue.instance;
+  final _bluetoothClassicPlugin = BluetoothClassic();
 
   Rx<double> posX = 100.0.obs;
   Rx<double> posY = 100.0.obs;
@@ -15,57 +20,29 @@ class BleController extends GetxController {
 
   Future scanDevices() async {
     isScanning.value = true;
-    var blePermission = await Permission.bluetoothScan.status;
-    if (blePermission.isDenied) {
-      if (await Permission.bluetoothScan.request().isGranted) {
-        if (await Permission.bluetoothConnect.request().isGranted) {
-          await flutterBlue.startScan(timeout: const Duration(seconds: 10));
-          await flutterBlue.stopScan();
-        }
-      }
-    } else {
-      await flutterBlue.startScan(timeout: const Duration(seconds: 10));
-      await flutterBlue.stopScan();
-    }
+
+    List<Device> devices = await _bluetoothClassicPlugin.getPairedDevices();
+
     isScanning.value = false;
   }
 
-  Future<void> connectDevice(BluetoothDevice device) async {
-    try {
-      await device.connect();
-      Get.snackbar(
-        "Conectado com sucesso",
-        "Dispositivo ${device.name} conectado com sucesso",
-        duration: const Duration(seconds: 6),
-        backgroundColor: Colors.green,
-      );
-    } on Exception catch (e) {
-      Get.snackbar(
-        "Erro ao conectar",
-        "Erro: $e",
-        duration: const Duration(seconds: 6),
-        backgroundColor: Colors.red,
-      );
-    }
+  Future<void> connectDevice(Device device) async {
+    await _bluetoothClassicPlugin.connect(device.address, "00001101-0000-1000-8000-00805f9b34fb");
+
+    Get.snackbar(
+      "Conectado com sucesso",
+      "Dispositivo ${device.name} conectado com sucesso",
+      duration: const Duration(seconds: 6),
+      backgroundColor: Colors.green,
+    );
+
+    _bluetoothClassicPlugin.onDeviceDataReceived().listen((event) {
+      print(utf8.decode(event));
+    });
   }
 
-  Future<void> disconnectDevice(BluetoothDevice device) async {
-    try {
-      await device.disconnect();
-      Get.snackbar(
-        "Erro ao desconectar",
-        "Dispositivo ${device.name} conectado com sucesso",
-        duration: const Duration(seconds: 6),
-        backgroundColor: Colors.green,
-      );
-    } on Exception catch (e) {
-      Get.snackbar(
-        "Erro ao desconectar",
-        "Erro: $e",
-        duration: const Duration(seconds: 6),
-        backgroundColor: Colors.red,
-      );
-    }
+  Future<void> disconnectDevice(Device device) async {
+
   }
 
   Future<void> discoverServices() async {
@@ -89,7 +66,8 @@ class BleController extends GetxController {
 
     print('position x: ${posX.value.toString()}');
     print('position y: ${posY.value.toString()}');
+    _bluetoothClassicPlugin.write("${posX.value.toString()}");
   }
 
-  Stream<List<ScanResult>> get scanResults => flutterBlue.scanResults;
+  Stream<List<Device>> get scanResults => Stream.fromFuture(_bluetoothClassicPlugin.getPairedDevices());
 }
