@@ -64,9 +64,7 @@ class BleController extends GetxController {
     posX.value = positionX + step * details.x;
     posY.value = positionY + step * details.y;
 
-    print('position x: ${posX.value.toString()}');
-    print('position y: ${posY.value.toString()}');
-    _bluetoothClassicPlugin.write("${posX.value.toString()}");
+    _bluetoothClassicPlugin.write("${posX.value.toString()} ${posY.value.toString()}");
   }
 
   Stream<List<Device>> get scanResults => Stream.fromFuture(_bluetoothClassicPlugin.getPairedDevices());
