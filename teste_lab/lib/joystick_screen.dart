@@ -26,22 +26,24 @@ class JoystickScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ObjectDetected(
-                      title: "Esquerda",
-                      detected: true,
-                    ),
-                    ObjectDetected(
-                      title: "Frente",
-                      detected: true,
-                    ),
-                    ObjectDetected(
-                      detected: true,
-                      title: "Direita",
-                    ),
-                  ],
+                Obx(
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ObjectDetected(
+                        title: "Esquerda",
+                        detected: _bleController.detectedLeft.value,
+                      ),
+                      ObjectDetected(
+                        title: "Frente",
+                        detected: _bleController.detectedFront.value,
+                      ),
+                      ObjectDetected(
+                        detected: _bleController.detectedRight.value,
+                        title: "Direita",
+                      ),
+                    ],
+                  ),
                 ),
                 Center(
                   child: Stack(

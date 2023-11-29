@@ -13,6 +13,9 @@ class BleController extends GetxController {
 
   Rx<double> posX = 100.0.obs;
   Rx<double> posY = 100.0.obs;
+  Rx<bool> detectedLeft = false.obs;
+  Rx<bool> detectedRight = false.obs;
+  Rx<bool> detectedFront = false.obs;
 
   Rx<bool> isScanning = false.obs;
   Rx<BluetoothDevice?> connectedDevice = Rx<BluetoothDevice?>(null);
@@ -59,11 +62,17 @@ class BleController extends GetxController {
 
   void changePosistion(double positionX, double positionY, double step,
       StickDragDetails details) {
-    posX.value = positionX + step * details.x;
-    posY.value = positionY + step * details.y;
+    posX.value = details.x;
+    posY.value = -1 * details.y;
 
-    _bluetoothClassicPlugin
-        .write("${posX.value.toString()} ${posY.value.toString()}");
+    //print('details x: ${details.x}');
+    //print('details y: ${details.y}');
+
+    print('Pos X: ${posX.value}');
+    print('Pos Y: ${posY.value}');
+
+    // _bluetoothClassicPlugin
+    //     .write("${posX.value.toString()} ${posY.value.toString()}");
   }
 
   Stream<List<Device>> get scanResults =>
