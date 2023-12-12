@@ -62,8 +62,10 @@ class JoystickScreen extends StatelessWidget {
                                 details);
                           },
                           onStickDragEnd: () {
-                            _bleController.posX.value = 100;
-                            _bleController.posY.value = 100;
+                            _bleController.changePosistion(
+                                0,
+                                0,
+                                10, null);
                           },
                         ),
                       ),
